@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { countries } from "@/config/countries";
 import { conferences } from "@/config/conferences";
+import { history } from "@/config/content";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -94,6 +96,28 @@ export default function HomePage() {
               </Card>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* History */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-pamoja-charcoal mb-10 text-center">Our Journey</h2>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {history.map((h) => (
+              <div key={h.year} className={`relative rounded-xl overflow-hidden group ${h.upcoming ? "ring-2 ring-pamoja-lime" : ""}`}>
+                <div className="aspect-[3/4] relative">
+                  <Image src={h.image} alt={h.label} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 p-4">
+                  <p className="text-pamoja-lime text-xs font-semibold">{h.year}</p>
+                  <p className="text-white font-bold">{h.label}</p>
+                  <p className="text-white/60 text-xs mt-1">{h.place} — {h.delegates} delegates</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

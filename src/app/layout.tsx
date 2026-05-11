@@ -23,9 +23,30 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Pamoja Africa V — Continental Conference 2028",
+  title: {
+    default: "Pamoja Africa V — Continental Conference 2028",
+    template: "%s | Pamoja Africa V",
+  },
   description:
     "Join 5,000+ African students, young professionals, and church leaders in Addis Ababa for the 5th Pan-African gathering.",
+  keywords: ["Pamoja", "Africa", "conference", "CCC", "Cru", "Addis Ababa", "2028", "registration"],
+  openGraph: {
+    title: "Pamoja Africa V — Arise, Shine. Africa Together.",
+    description: "5,000+ delegates from across Africa. Dec 27, 2027 — Jan 6, 2028. Addis Ababa, Ethiopia.",
+    url: "https://runpamoja.org",
+    siteName: "Pamoja Africa V",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pamoja Africa V — Continental Conference 2028",
+    description: "Join 5,000+ African leaders in Addis Ababa.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

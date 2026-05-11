@@ -21,18 +21,21 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/#about" className="text-white/70 hover:text-white text-sm transition-colors">
-              About
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/speakers" className="text-white/70 hover:text-white text-sm transition-colors">
+              Speakers
             </Link>
-            <Link href="/#conferences" className="text-white/70 hover:text-white text-sm transition-colors">
-              Conferences
+            <Link href="/agenda" className="text-white/70 hover:text-white text-sm transition-colors">
+              Agenda
             </Link>
-            <Link href="/#countries" className="text-white/70 hover:text-white text-sm transition-colors">
-              Countries
+            <Link href="/venue" className="text-white/70 hover:text-white text-sm transition-colors">
+              Venue
             </Link>
             <Link href="/directory" className="text-white/70 hover:text-white text-sm transition-colors">
               Directory
+            </Link>
+            <Link href="/faq" className="text-white/70 hover:text-white text-sm transition-colors">
+              FAQ
             </Link>
             <Link
               href="/ethiopia/register"

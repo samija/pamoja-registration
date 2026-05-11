@@ -28,6 +28,7 @@ interface FormData {
   organization: string;
   role: string;
   city: string;
+  directoryOptIn: boolean;
 }
 
 const STEPS: { key: Step; label: string }[] = [
@@ -51,9 +52,10 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
     organization: "",
     role: "",
     city: "",
+    directoryOptIn: false,
   });
 
-  function update(field: keyof FormData, value: string) {
+  function update(field: keyof FormData, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   }
@@ -244,6 +246,19 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
                 onChange={(e) => update("city", e.target.value)}
               />
             </div>
+
+            {/* Directory opt-in */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.directoryOptIn}
+                onChange={(e) => update("directoryOptIn", e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-pamoja-border text-pamoja-lime focus:ring-pamoja-lime"
+              />
+              <span className="text-sm text-pamoja-charcoal-light">
+                List me in the public attendee directory so other delegates can connect with me.
+              </span>
+            </label>
 
             <div className="pt-4 flex justify-between">
               <Button variant="ghost" onClick={() => setStep("conference")}>
