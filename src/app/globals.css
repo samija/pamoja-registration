@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  /* PAMUJA Design Tokens — Quiet Luxury */
+  --pamoja-green-deep: #0A1002;
+  --pamoja-green-dark: #1A2B0A;
+  --pamoja-green-mid: #5C8727;
+  --pamoja-lime: #8DCF3D;
+  --pamoja-orange: #EA7F1D;
+  --pamoja-cream: #FAF7F2;
+  --pamoja-charcoal: #2C2C2C;
+  --pamoja-charcoal-light: #4A4A4A;
+  --pamoja-white: #FFFFFF;
+  --pamoja-border: #E5E2DC;
+  --pamoja-muted: #9B9B8F;
+
+  --background: var(--pamoja-cream);
+  --foreground: var(--pamoja-charcoal);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-montserrat);
+  --font-body: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+
+  /* PAMUJA palette */
+  --color-pamoja-green-deep: var(--pamoja-green-deep);
+  --color-pamoja-green-dark: var(--pamoja-green-dark);
+  --color-pamoja-green-mid: var(--pamoja-green-mid);
+  --color-pamoja-lime: var(--pamoja-lime);
+  --color-pamoja-orange: var(--pamoja-orange);
+  --color-pamoja-cream: var(--pamoja-cream);
+  --color-pamoja-charcoal: var(--pamoja-charcoal);
+  --color-pamoja-charcoal-light: var(--pamoja-charcoal-light);
+  --color-pamoja-white: var(--pamoja-white);
+  --color-pamoja-border: var(--pamoja-border);
+  --color-pamoja-muted: var(--pamoja-muted);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles — accessible */
+:focus-visible {
+  outline: 2px solid var(--pamoja-lime);
+  outline-offset: 2px;
+}
