@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useRealtime } from "@/hooks/use-realtime";
+import { showToast, ToastContainer } from "@/components/ui/toast";
 import type { Registrant, Payment } from "@/lib/supabase/types";
 
 type RegistrantWithPayment = Registrant & { payments: Payment[] };
@@ -17,24 +19,85 @@ export default function RegistrantsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("registrants")
-        .select("*, payments(*)")
-        .order("created_at", { ascending: false })
-        .limit(200);
+  const reload = useCallback(async () => {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("registrants")
+      .select("*, payments(*)")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    setRegistrants((data as RegistrantWithPayment[]) || []);
+    setLoading(false);
+  }, []);
 
-      if (error) {
-        console.error("Failed to load registrants:", error);
-      } else {
-        setRegistrants((data as RegistrantWithPayment[]) || []);
-      }
-      setLoading(false);
+  // Real-time: new registrations
+  useRealtime({
+    table: "registrants",
+    onInsert: (payload) => {
+      showToast(`New registration: ${payload.first_name} ${payload.last_name}`, "success");
+      reload();
+    },
+    onUpdate: () => reload(),
+  });
+
+  useEffect(() => { reload(); }, [reload]);
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map((r) => r.id)));
     }
-    load();
+  }
+
+  async function bulkAction(action: "confirm" | "cancel" | "export") {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    setBulkLoading(true);
+
+    if (action === "export") {
+      const res = await fetch("/api/admin/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, ids }),
+      });
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pamoja-selected-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const res = await fetch("/api/admin/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, ids }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`${data.updated} registrants ${action === "confirm" ? "confirmed" : "cancelled"}`, "success");
+        setSelected(new Set());
+        reload();
+      }
+    }
+    setBulkLoading(false);
+  }
+
+  // Remove duplicate — reload is already called via useEffect above
+  useEffect(() => {
+    // no-op, load handled by reload()
   }, []);
 
   const filtered = registrants.filter((r) => {
@@ -82,6 +145,21 @@ export default function RegistrantsPage() {
         </a>
       </div>
 
+      {/* Bulk action bar */}
+      {selected.size > 0 && (
+        <div className="bg-pamoja-green-deep text-white rounded-lg px-4 py-3 mb-4 flex items-center justify-between">
+          <span className="text-sm">{selected.size} selected</span>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={() => bulkAction("confirm")} loading={bulkLoading}>Confirm</Button>
+            <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10" onClick={() => bulkAction("cancel")} loading={bulkLoading}>Cancel</Button>
+            <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10" onClick={() => bulkAction("export")} loading={bulkLoading}>Export Selected</Button>
+            <Button size="sm" variant="ghost" className="text-white/60" onClick={() => setSelected(new Set())}>Clear</Button>
+          </div>
+        </div>
+      )}
+
+      <ToastContainer />
+
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6">
         <div className="w-64">
@@ -118,6 +196,9 @@ export default function RegistrantsPage() {
             <table className="w-full text-sm">
               <thead className="bg-pamoja-cream/50 border-b border-pamoja-border">
                 <tr>
+                  <th className="px-4 py-3 w-10">
+                    <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} className="w-4 h-4 rounded" />
+                  </th>
                   <th className="text-left px-4 py-3 font-medium text-pamoja-charcoal">Name</th>
                   <th className="text-left px-4 py-3 font-medium text-pamoja-charcoal">Email</th>
                   <th className="text-left px-4 py-3 font-medium text-pamoja-charcoal">Phone</th>
@@ -130,6 +211,9 @@ export default function RegistrantsPage() {
               <tbody className="divide-y divide-pamoja-border">
                 {filtered.map((r) => (
                   <tr key={r.id} className="hover:bg-pamoja-cream/30">
+                    <td className="px-4 py-3">
+                      <input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleSelect(r.id)} className="w-4 h-4 rounded" />
+                    </td>
                     <td className="px-4 py-3 font-medium">
                       {r.first_name} {r.last_name}
                     </td>

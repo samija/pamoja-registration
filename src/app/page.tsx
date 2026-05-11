@@ -5,6 +5,8 @@ import { conferences } from "@/config/conferences";
 import { history } from "@/config/content";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Countdown } from "@/components/ui/countdown";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export default function HomePage() {
   return (
@@ -25,7 +27,7 @@ export default function HomePage() {
             <p className="text-lg text-white/70 leading-relaxed mb-10 max-w-xl">
               5,000+ students, young professionals, and church leaders from across Africa gathering for worship, vision, and commissioning.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 mb-10">
               <Link href="/ethiopia/register">
                 <Button size="lg">Register Now</Button>
               </Link>
@@ -35,11 +37,13 @@ export default function HomePage() {
                 </Button>
               </Link>
             </div>
+            <Countdown />
           </div>
         </div>
       </section>
 
       {/* About */}
+      <ScrollReveal>
       <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-pamoja-charcoal mb-4">
@@ -50,6 +54,7 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* Conferences */}
       <section id="conferences" className="bg-white py-20">
@@ -98,6 +103,35 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Testimonials */}
+      <ScrollReveal>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <h2 className="text-3xl font-bold text-pamoja-charcoal mb-10 text-center">
+          Voices from Pamoja
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { name: "Grace Wanjiru", role: "Delegate, Pamoja IV", country: "Kenya", quote: "I came as a first-year student. I left with a continent in my heart.", photo: "/assets/past_1.png" },
+            { name: "Pst. Ezekiel Banda", role: "Delegate, Pamoja III", country: "Zambia", quote: "Pamoja is where a generation of African leaders learned to pray together, fail together, and believe for something bigger than themselves.", photo: "/assets/past_2.png" },
+            { name: "Hannah Tesfaye", role: "Young Professional, Pamoja IV", country: "Ethiopia", quote: "Hosting Pamoja V at home feels like ten years of prayer finally arriving at our door.", photo: "/assets/speaker4.png" },
+          ].map((t) => (
+            <Card key={t.name} variant="glass" className="flex flex-col">
+              <div className="flex items-center gap-3 mb-4">
+                <Image src={t.photo} alt={t.name} width={44} height={44} className="w-11 h-11 rounded-full object-cover" />
+                <div>
+                  <p className="font-semibold text-pamoja-charcoal text-sm">{t.name}</p>
+                  <p className="text-xs text-pamoja-muted">{t.role} — {t.country}</p>
+                </div>
+              </div>
+              <p className="text-pamoja-charcoal-light text-sm leading-relaxed italic flex-1">
+                &ldquo;{t.quote}&rdquo;
+              </p>
+            </Card>
+          ))}
+        </div>
+      </section>
+      </ScrollReveal>
 
       {/* History */}
       <section className="bg-white py-20">
