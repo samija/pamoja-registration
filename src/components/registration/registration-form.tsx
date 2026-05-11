@@ -90,7 +90,9 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
 
       const data = await res.json();
 
-      if (data.checkoutUrl) {
+      if (data.waitlisted) {
+        window.location.href = `/${countrySlug}/register/success?waitlisted=true`;
+      } else if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
       } else if (data.error) {
         alert(data.error);

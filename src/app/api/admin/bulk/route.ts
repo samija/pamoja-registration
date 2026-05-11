@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { logAction } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
         .in("id", ids);
 
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      await logAction(supabase, "bulk.confirm", "registrant", undefined, { ids, count: ids.length });
       return NextResponse.json({ success: true, updated: ids.length });
     }
 
@@ -30,6 +32,7 @@ export async function POST(req: NextRequest) {
         .in("id", ids);
 
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      await logAction(supabase, "bulk.cancel", "registrant", undefined, { ids, count: ids.length });
       return NextResponse.json({ success: true, updated: ids.length });
     }
 

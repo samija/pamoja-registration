@@ -78,6 +78,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Country or conference not found" }, { status: 404 });
     }
 
+    // Check capacity — auto-waitlist if full
+    const { data: cc } = await supabase
+      .from("country_conferences")
+      .select("capacity, registered_count")
+      .eq("country_id", country.id)
+      .eq("conference_id", conference.id)
+      .single();
+
+    const isAtCapacity = cc?.capacity && cc.registered_count >= cc.capacity;
+    const initialStatus = isAtCapacity ? "waitlisted" : "pending";
+
     // Create registrant
     const { data: registrant, error: regError } = await supabase
       .from("registrants")
@@ -92,7 +103,7 @@ export async function POST(req: NextRequest) {
         organization,
         role,
         city,
-        status: "pending",
+        status: initialStatus,
         locale: countryConfig.locale,
       })
       .select("id")
@@ -101,6 +112,24 @@ export async function POST(req: NextRequest) {
     if (regError || !registrant) {
       console.error("Registration error:", regError);
       return NextResponse.json({ error: "Failed to create registration" }, { status: 500 });
+    }
+
+    // Increment registered count
+    if (cc) {
+      await supabase
+        .from("country_conferences")
+        .update({ registered_count: (cc.registered_count || 0) + 1 })
+        .eq("country_id", country.id)
+        .eq("conference_id", conference.id);
+    }
+
+    // If waitlisted, skip payment — return waitlist notice
+    if (initialStatus === "waitlisted") {
+      return NextResponse.json({
+        success: true,
+        waitlisted: true,
+        message: "Registration is at capacity. You have been added to the waitlist and will be notified if a spot opens.",
+      });
     }
 
     // Get exchange rate
