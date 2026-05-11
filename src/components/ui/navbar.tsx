@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -43,6 +44,7 @@ export function Navbar() {
             >
               Register Now
             </Link>
+            <ThemeToggle />
           </div>
 
           {/* Mobile hamburger */}

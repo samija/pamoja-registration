@@ -1,0 +1,120 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+
+  const supabase = await createServerSupabaseClient();
+
+  const { data: reg } = await supabase
+    .from("registrants")
+    .select("*, countries(name), conferences(name, start_date, end_date, location)")
+    .eq("id", id)
+    .single();
+
+  if (!reg || reg.status !== "confirmed") {
+    return NextResponse.json({ error: "Confirmed registration not found" }, { status: 404 });
+  }
+
+  const country = Array.isArray(reg.countries) ? reg.countries[0] : reg.countries;
+  const conference = Array.isArray(reg.conferences) ? reg.conferences[0] : reg.conferences;
+  const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Invitation Letter — ${reg.first_name} ${reg.last_name}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', serif; color: #2C2C2C; padding: 60px; max-width: 800px; margin: 0 auto; line-height: 1.7; }
+    .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #8DCF3D; }
+    .header h1 { font-family: 'Montserrat', sans-serif; color: #0A1002; font-size: 28px; }
+    .header p { color: #9B9B8F; font-size: 13px; margin-top: 4px; }
+    .date { text-align: right; color: #9B9B8F; font-size: 13px; margin-bottom: 30px; }
+    .to { margin-bottom: 20px; }
+    .to strong { display: block; }
+    .body p { margin-bottom: 16px; font-size: 15px; }
+    .details { background: #FAF7F2; padding: 20px; border-radius: 8px; margin: 24px 0; }
+    .details table { width: 100%; border-collapse: collapse; }
+    .details td { padding: 6px 0; font-size: 14px; }
+    .details td:first-child { color: #9B9B8F; width: 160px; }
+    .signature { margin-top: 40px; }
+    .signature .name { font-weight: 600; }
+    .footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid #E5E2DC; text-align: center; color: #9B9B8F; font-size: 11px; }
+    @media print { body { padding: 40px; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PAMOJA AFRICA V</h1>
+    <p>Campus Crusade for Christ Africa &middot; Continental Conference 2028</p>
+  </div>
+
+  <p class="date">${today}</p>
+
+  <div class="to">
+    <p>To Whom It May Concern,</p>
+  </div>
+
+  <div class="body">
+    <p>
+      This letter is to confirm that <strong>${reg.first_name} ${reg.last_name}</strong> from
+      <strong>${country?.name || "—"}</strong> is a registered and confirmed participant of
+      <strong>${conference?.name || "Pamoja Africa V"}</strong>.
+    </p>
+
+    <div class="details">
+      <table>
+        <tr><td>Full Name</td><td><strong>${reg.first_name} ${reg.last_name}</strong></td></tr>
+        <tr><td>Email</td><td>${reg.email}</td></tr>
+        <tr><td>Phone</td><td>${reg.phone || "—"}</td></tr>
+        <tr><td>Organization</td><td>${reg.organization || "—"}</td></tr>
+        <tr><td>Conference</td><td>${conference?.name || "—"}</td></tr>
+        <tr><td>Dates</td><td>${conference?.start_date || "—"} to ${conference?.end_date || "—"}</td></tr>
+        <tr><td>Location</td><td>${conference?.location || "Addis Ababa, Ethiopia"}</td></tr>
+        <tr><td>Registration ID</td><td style="font-family: monospace; font-size: 12px;">${reg.id}</td></tr>
+      </table>
+    </div>
+
+    <p>
+      Pamoja Africa V is the 5th continental gathering organized by Campus Crusade for Christ Africa,
+      bringing together over 5,000 students, young professionals, and church leaders from across the
+      African continent. The event will take place at the Addis Ababa Convention Center, Ethiopia.
+    </p>
+
+    <p>
+      We kindly request that the relevant authorities grant ${reg.first_name} the necessary visa
+      and travel permissions to attend this conference. The organizers take full responsibility for
+      ensuring that the participant will comply with all immigration requirements during their stay.
+    </p>
+
+    <p>
+      Should you require any further information, please do not hesitate to contact us at
+      <strong>info@runpamoja.org</strong>.
+    </p>
+  </div>
+
+  <div class="signature">
+    <p>Yours sincerely,</p>
+    <br>
+    <p class="name">The Pamoja Africa V Organizing Committee</p>
+    <p style="color: #9B9B8F; font-size: 13px;">Campus Crusade for Christ Africa</p>
+    <p style="color: #9B9B8F; font-size: 13px;">info@runpamoja.org</p>
+  </div>
+
+  <div class="footer">
+    <p>This is an official document generated by the Pamoja Africa V Registration System.</p>
+    <p>Verification: runpamoja.org/status &middot; Reference: ${reg.id}</p>
+  </div>
+</body>
+</html>`;
+
+  return new NextResponse(html, {
+    headers: { "Content-Type": "text/html" },
+  });
+}
