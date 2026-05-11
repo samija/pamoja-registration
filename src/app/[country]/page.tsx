@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCountryConfig } from "@/config/countries";
 import { getPricingForCountry, getConference } from "@/config/conferences";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 
 export default async function CountryPage({ params }: { params: Promise<{ country: string }> }) {
   const { country } = await params;
@@ -34,14 +33,12 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
               {config.contactEmail}
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href={`/${country}/register`}>
-                <Button size="lg">Register Now</Button>
-              </Link>
-              <Link href={`/${country}/register/group`}>
-                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                  Group Registration
-                </Button>
-              </Link>
+              <ButtonLink href={`/${country}/register`} size="lg">
+                Register Now
+              </ButtonLink>
+              <ButtonLink href={`/${country}/register/group`} size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                Group Registration
+              </ButtonLink>
             </div>
           </div>
         </div>
@@ -74,9 +71,9 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
                         {p.currency}
                       </span>
                     </p>
-                    <Link href={`/${country}/register?conference=${p.conferenceId}`}>
-                      <Button size="md">Select</Button>
-                    </Link>
+                    <ButtonLink href={`/${country}/register?conference=${p.conferenceId}`} size="md">
+                      Select
+                    </ButtonLink>
                   </div>
                 </CardContent>
               </Card>

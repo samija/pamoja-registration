@@ -1,12 +1,12 @@
-import Link from "next/link";
 import Image from "next/image";
 import { countries } from "@/config/countries";
 import { conferences } from "@/config/conferences";
 import { history } from "@/config/content";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import { Countdown } from "@/components/ui/countdown";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -28,14 +28,12 @@ export default function HomePage() {
               5,000+ students, young professionals, and church leaders from across Africa gathering for worship, vision, and commissioning.
             </p>
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link href="/ethiopia/register">
-                <Button size="lg">Register Now</Button>
-              </Link>
-              <Link href="#conferences">
-                <Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
-                  View Conferences
-                </Button>
-              </Link>
+              <ButtonLink href="/ethiopia/register" size="lg">
+                Register Now
+              </ButtonLink>
+              <ButtonLink href="#conferences" variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10">
+                View Conferences
+              </ButtonLink>
             </div>
             <Countdown />
           </div>
@@ -162,9 +160,9 @@ export default function HomePage() {
           <p className="text-white/70 mb-8">
             Secure your spot at Pamoja Africa V. Early registration is now open.
           </p>
-          <Link href="/ethiopia/register">
-            <Button size="lg">Register Now</Button>
-          </Link>
+          <ButtonLink href="/ethiopia/register" size="lg">
+            Register Now
+          </ButtonLink>
         </div>
       </section>
     </div>

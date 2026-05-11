@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRealtime } from "@/hooks/use-realtime";
 import { showToast, ToastContainer } from "@/components/ui/toast";
@@ -135,14 +135,9 @@ export default function RegistrantsPage() {
           <h1 className="text-2xl font-bold text-pamoja-charcoal">Registrants</h1>
           <p className="text-sm text-pamoja-muted mt-1">{filtered.length} of {registrants.length} records</p>
         </div>
-        <a href="/api/admin/export" download>
-          <Button variant="outline" size="sm">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Export CSV
-          </Button>
-        </a>
+        <ButtonLink href="/api/admin/export" variant="outline" size="sm" download>
+          Export CSV
+        </ButtonLink>
       </div>
 
       {/* Bulk action bar */}

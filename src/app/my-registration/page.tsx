@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -192,15 +192,9 @@ export default function MyRegistrationPage() {
             <Card variant="elevated">
               <h3 className="text-lg font-semibold text-pamoja-charcoal mb-4">Downloads</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <a href={`/api/calendar?id=${profile.id}`} download>
-                  <Button variant="outline" className="w-full" size="sm">Calendar (.ics)</Button>
-                </a>
-                <a href={`/api/invitation?id=${profile.id}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full" size="sm">Invitation Letter</Button>
-                </a>
-                <a href={`/api/admin/badge?id=${profile.id}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full" size="sm">Conference Badge</Button>
-                </a>
+                <ButtonLink href={`/api/calendar?id=${profile.id}`} variant="outline" size="sm" download className="w-full">Calendar (.ics)</ButtonLink>
+                <ButtonLink href={`/api/invitation?id=${profile.id}`} variant="outline" size="sm" target="_blank" rel="noopener noreferrer" className="w-full">Invitation Letter</ButtonLink>
+                <ButtonLink href={`/api/admin/badge?id=${profile.id}`} variant="outline" size="sm" target="_blank" rel="noopener noreferrer" className="w-full">Conference Badge</ButtonLink>
               </div>
             </Card>
           )}
@@ -211,24 +205,9 @@ export default function MyRegistrationPage() {
               <h3 className="text-lg font-semibold text-pamoja-charcoal mb-4">Share</h3>
               <p className="text-sm text-pamoja-charcoal-light mb-3">Let others know you&apos;re attending!</p>
               <div className="flex gap-3">
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm attending ${conference?.name || "Pamoja Africa V"} in Addis Ababa! 🌍✨ #PamojaAfricaV #AriseAfrica`)}&url=${encodeURIComponent("https://pamoja-pi.vercel.app")}`}
-                  target="_blank" rel="noopener noreferrer"
-                >
-                  <Button size="sm" variant="outline">Twitter/X</Button>
-                </a>
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://pamoja-pi.vercel.app")}&quote=${encodeURIComponent(`I'm attending ${conference?.name || "Pamoja Africa V"}! 🌍`)}`}
-                  target="_blank" rel="noopener noreferrer"
-                >
-                  <Button size="sm" variant="outline">Facebook</Button>
-                </a>
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`I'm attending ${conference?.name || "Pamoja Africa V"} in Addis Ababa! Register at https://pamoja-pi.vercel.app 🌍`)}`}
-                  target="_blank" rel="noopener noreferrer"
-                >
-                  <Button size="sm" variant="outline">WhatsApp</Button>
-                </a>
+                <ButtonLink href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm attending ${conference?.name || "Pamoja Africa V"} in Addis Ababa! #PamojaAfricaV #AriseAfrica`)}&url=${encodeURIComponent("https://pamoja-pi.vercel.app")}`} target="_blank" rel="noopener noreferrer" size="sm" variant="outline">Twitter/X</ButtonLink>
+                <ButtonLink href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://pamoja-pi.vercel.app")}`} target="_blank" rel="noopener noreferrer" size="sm" variant="outline">Facebook</ButtonLink>
+                <ButtonLink href={`https://wa.me/?text=${encodeURIComponent(`I'm attending ${conference?.name || "Pamoja Africa V"} in Addis Ababa! Register at https://pamoja-pi.vercel.app`)}`} target="_blank" rel="noopener noreferrer" size="sm" variant="outline">WhatsApp</ButtonLink>
               </div>
             </Card>
           )}

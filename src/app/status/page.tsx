@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,9 +134,9 @@ export default function StatusPage() {
             {/* Actions for confirmed registrants */}
             {r.status === "confirmed" && (
               <div className="flex gap-3 mt-4 pt-4 border-t border-pamoja-border">
-                <Link href={`/api/invitation?id=${r.id}`} target="_blank">
-                  <Button size="sm" variant="outline">Download Invitation Letter</Button>
-                </Link>
+                <ButtonLink href={`/api/invitation?id=${r.id}`} target="_blank" rel="noopener noreferrer" size="sm" variant="outline">
+                  Download Invitation Letter
+                </ButtonLink>
               </div>
             )}
           </Card>

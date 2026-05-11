@@ -1,4 +1,5 @@
-import { ButtonHTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes, AnchorHTMLAttributes, forwardRef } from "react";
+import Link from "next/link";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
@@ -26,13 +27,17 @@ const sizeStyles: Record<Size, string> = {
   lg: "px-8 py-3.5 text-base rounded-lg",
 };
 
+function baseClasses(variant: Variant, size: Size, className: string) {
+  return `inline-flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", loading, disabled, className = "", children, ...props }, ref) => {
     return (
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        className={baseClasses(variant, size, className)}
         {...props}
       >
         {loading && (
@@ -48,3 +53,38 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = "Button";
+
+/** ButtonLink — renders as a Next.js Link styled like a Button. Use instead of <Link><Button>. */
+interface ButtonLinkProps {
+  href: string;
+  variant?: Variant;
+  size?: Size;
+  className?: string;
+  children: React.ReactNode;
+  target?: string;
+  rel?: string;
+  download?: boolean | string;
+}
+
+export function ButtonLink({ href, variant = "primary", size = "md", className = "", children, target, rel, download }: ButtonLinkProps) {
+  // External links or downloads use <a>
+  if (target || download || href.startsWith("http")) {
+    return (
+      <a
+        href={href}
+        target={target}
+        rel={rel}
+        download={download}
+        className={baseClasses(variant, size, className)}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={baseClasses(variant, size, className)}>
+      {children}
+    </Link>
+  );
+}

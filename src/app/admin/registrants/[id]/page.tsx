@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -158,13 +158,11 @@ export default async function RegistrantDetailPage({ params }: { params: Promise
 
       {/* Actions */}
       <div className="mt-6 flex gap-3">
-        <Link href="/admin/registrants">
-          <Button variant="outline">Back to List</Button>
-        </Link>
+        <ButtonLink href="/admin/registrants" variant="outline">Back to List</ButtonLink>
         {registrant.status === "confirmed" && (
-          <a href={`/api/admin/badge?id=${registrant.id}`} target="_blank" rel="noopener noreferrer">
-            <Button variant="secondary">Print Badge</Button>
-          </a>
+          <ButtonLink href={`/api/admin/badge?id=${registrant.id}`} variant="secondary" target="_blank" rel="noopener noreferrer">
+            Print Badge
+          </ButtonLink>
         )}
       </div>
     </div>

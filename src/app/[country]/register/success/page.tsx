@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCountryConfig } from "@/config/countries";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 
 export default async function SuccessPage({
   params,
@@ -37,36 +36,22 @@ export default async function SuccessPage({
         )}
 
         <div className="flex flex-col gap-3">
-          {/* Calendar download for confirmed */}
           {!isWaitlisted && id && (
-            <a href={`/api/calendar?id=${id}`} download>
-              <Button variant="primary" className="w-full">
-                Add to Calendar (.ics)
-              </Button>
-            </a>
+            <ButtonLink href={`/api/calendar?id=${id}`} download className="w-full">
+              Add to Calendar (.ics)
+            </ButtonLink>
           )}
-
-          {/* Invitation letter for confirmed */}
           {!isWaitlisted && id && (
-            <a href={`/api/invitation?id=${id}`} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="w-full">
-                Download Invitation Letter
-              </Button>
-            </a>
+            <ButtonLink href={`/api/invitation?id=${id}`} variant="outline" target="_blank" rel="noopener noreferrer" className="w-full">
+              Download Invitation Letter
+            </ButtonLink>
           )}
-
-          {/* Check status */}
-          <Link href="/status">
-            <Button variant="outline" className="w-full">
-              Check Registration Status
-            </Button>
-          </Link>
-
-          <Link href={`/${country}`}>
-            <Button variant="ghost" className="w-full">
-              Back to {config.name}
-            </Button>
-          </Link>
+          <ButtonLink href="/status" variant="outline" className="w-full">
+            Check Registration Status
+          </ButtonLink>
+          <ButtonLink href={`/${country}`} variant="ghost" className="w-full">
+            Back to {config.name}
+          </ButtonLink>
         </div>
       </Card>
     </div>
