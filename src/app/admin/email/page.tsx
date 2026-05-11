@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { showToast, ToastContainer } from "@/components/ui/toast";
 
@@ -51,17 +52,15 @@ export default function EmailBlastPage() {
       <Card variant="elevated" className="space-y-5">
         <Input label="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Important update about Pamoja Africa V" required />
 
-        <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-pamoja-charcoal">Body (HTML)</label>
-          <textarea
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            rows={10}
-            placeholder={"<p>Dear {{name}},</p>\n<p>We are excited to share...</p>"}
-            className="w-full px-4 py-3 text-sm rounded-lg border border-pamoja-border bg-white text-pamoja-charcoal placeholder:text-pamoja-muted focus:border-pamoja-lime focus:ring-1 focus:ring-pamoja-lime outline-none font-mono"
-            required
-          />
-        </div>
+        <Textarea
+          label="Body (HTML)"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={10}
+          placeholder={"<p>Dear {{name}},</p>\n<p>We are excited to share...</p>"}
+          className="font-mono"
+          required
+        />
 
         <Select
           label="Filter by status (optional)"

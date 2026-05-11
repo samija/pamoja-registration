@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -131,14 +132,13 @@ export default function MyRegistrationPage() {
             {editing ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-pamoja-charcoal mb-1">Bio</label>
-                  <textarea
+                  <Textarea
+                    label="Bio"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     rows={3}
                     maxLength={200}
                     placeholder="Tell other delegates about yourself (200 chars max)..."
-                    className="w-full px-4 py-2.5 text-sm rounded-lg border border-pamoja-border bg-white text-pamoja-charcoal focus:border-pamoja-lime focus:ring-1 focus:ring-pamoja-lime outline-none"
                   />
                   <p className="text-xs text-pamoja-muted mt-1">{bio.length}/200</p>
                 </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { venueInfo } from "@/config/content";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export const metadata = {
   title: "Venue — Pamoja Africa V",
@@ -35,6 +36,7 @@ export default function VenuePage() {
         </div>
 
         {/* Specs */}
+        <ScrollReveal>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-16">
           {venueInfo.specs.map((s) => (
             <Card key={s.label} variant="elevated" className="text-center">
@@ -45,8 +47,10 @@ export default function VenuePage() {
             </Card>
           ))}
         </div>
+        </ScrollReveal>
 
         {/* Features */}
+        <ScrollReveal>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <div>
             <h2 className="text-2xl font-bold text-pamoja-charcoal mb-6">Facilities</h2>
@@ -71,6 +75,7 @@ export default function VenuePage() {
             </div>
           </div>
         </div>
+        </ScrollReveal>
       </div>
     </div>
   );

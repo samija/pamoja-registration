@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { speakers } from "@/config/content";
 import { Card } from "@/components/ui/card";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export const metadata = {
   title: "Speakers — Pamoja Africa V",
@@ -19,8 +20,9 @@ export default function SpeakersPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {speakers.map((s) => (
-          <Card key={s.name} className="overflow-hidden p-0">
+        {speakers.map((s, i) => (
+          <ScrollReveal key={s.name} delay={i * 100}>
+          <Card className="overflow-hidden p-0">
             <div
               className="h-48 flex items-end justify-center relative"
               style={{ background: s.bg }}
@@ -48,6 +50,7 @@ export default function SpeakersPage() {
               </div>
             </div>
           </Card>
+          </ScrollReveal>
         ))}
       </div>
     </div>

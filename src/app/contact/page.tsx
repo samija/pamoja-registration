@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 
 export default function ContactPage() {
@@ -72,16 +73,13 @@ export default function ContactPage() {
                   ]}
                   required
                 />
-                <div>
-                  <label className="block text-sm font-medium text-pamoja-charcoal mb-1.5">Message</label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={5}
-                    className="w-full px-4 py-2.5 text-sm rounded-lg border border-pamoja-border bg-white text-pamoja-charcoal focus:border-pamoja-lime focus:ring-1 focus:ring-pamoja-lime outline-none"
-                    required
-                  />
-                </div>
+                <Textarea
+                  label="Message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={5}
+                  required
+                />
                 <Button type="submit" loading={loading} className="w-full">Send Message</Button>
               </form>
             </Card>
