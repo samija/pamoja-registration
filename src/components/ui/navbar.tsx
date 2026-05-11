@@ -22,27 +22,19 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/speakers" className="text-white/70 hover:text-white text-sm transition-colors">
-              Speakers
-            </Link>
-            <Link href="/agenda" className="text-white/70 hover:text-white text-sm transition-colors">
-              Agenda
-            </Link>
-            <Link href="/venue" className="text-white/70 hover:text-white text-sm transition-colors">
-              Venue
-            </Link>
-            <Link href="/directory" className="text-white/70 hover:text-white text-sm transition-colors">
-              Directory
-            </Link>
-            <Link href="/faq" className="text-white/70 hover:text-white text-sm transition-colors">
-              FAQ
-            </Link>
+          <div className="hidden lg:flex items-center gap-5">
+            <Link href="/speakers" className="text-white/70 hover:text-white text-sm transition-colors">Speakers</Link>
+            <Link href="/agenda" className="text-white/70 hover:text-white text-sm transition-colors">Agenda</Link>
+            <Link href="/venue" className="text-white/70 hover:text-white text-sm transition-colors">Venue</Link>
+            <Link href="/gallery" className="text-white/70 hover:text-white text-sm transition-colors">Gallery</Link>
+            <Link href="/directory" className="text-white/70 hover:text-white text-sm transition-colors">Directory</Link>
+            <Link href="/contact" className="text-white/70 hover:text-white text-sm transition-colors">Contact</Link>
+            <Link href="/my-registration" className="text-white/70 hover:text-white text-sm transition-colors">My Registration</Link>
             <Link
               href="/ethiopia/register"
               className="bg-pamoja-lime text-pamoja-green-deep px-5 py-2 rounded-lg text-sm font-semibold hover:bg-pamoja-lime/90 transition-colors"
             >
-              Register Now
+              Register
             </Link>
             <ThemeToggle />
           </div>
@@ -50,7 +42,7 @@ export function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden text-white p-2"
+            className="lg:hidden text-white p-2"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,23 +57,27 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {open && (
-          <div className="md:hidden pb-4 space-y-2">
-            <Link href="/#about" onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
-              About
-            </Link>
-            <Link href="/#conferences" onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
-              Conferences
-            </Link>
-            <Link href="/#countries" onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
-              Countries
-            </Link>
-            <Link href="/directory" onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
-              Directory
-            </Link>
+          <div className="lg:hidden pb-4 space-y-1">
+            {[
+              { href: "/speakers", label: "Speakers" },
+              { href: "/agenda", label: "Agenda" },
+              { href: "/venue", label: "Venue" },
+              { href: "/gallery", label: "Gallery" },
+              { href: "/accommodation", label: "Accommodation" },
+              { href: "/directory", label: "Directory" },
+              { href: "/faq", label: "FAQ" },
+              { href: "/contact", label: "Contact" },
+              { href: "/my-registration", label: "My Registration" },
+              { href: "/status", label: "Check Status" },
+            ].map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
+                {link.label}
+              </Link>
+            ))}
             <Link
               href="/ethiopia/register"
               onClick={() => setOpen(false)}
-              className="block bg-pamoja-lime text-pamoja-green-deep px-5 py-2.5 rounded-lg text-sm font-semibold text-center mt-2"
+              className="block bg-pamoja-lime text-pamoja-green-deep px-5 py-2.5 rounded-lg text-sm font-semibold text-center mt-3"
             >
               Register Now
             </Link>
