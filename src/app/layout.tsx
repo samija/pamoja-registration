@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Inter, Fraunces } from "next/font/google";
 import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
+import { BackToTop } from "@/components/ui/back-to-top";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -63,6 +64,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );

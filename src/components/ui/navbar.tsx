@@ -1,11 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
+const navLinks = [
+  { href: "/speakers", label: "Speakers" },
+  { href: "/agenda", label: "Agenda" },
+  { href: "/venue", label: "Venue" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/directory", label: "Directory" },
+  { href: "/contact", label: "Contact" },
+  { href: "/my-registration", label: "My Registration" },
+];
+
+const mobileLinks = [
+  ...navLinks,
+  { href: "/accommodation", label: "Accommodation" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/status", label: "Check Status" },
+];
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  function isActive(href: string) {
+    return pathname === href;
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-pamoja-green-deep/95 backdrop-blur-md border-b border-white/10">
@@ -23,13 +46,19 @@ export function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-5">
-            <Link href="/speakers" className="text-white/70 hover:text-white text-sm transition-colors">Speakers</Link>
-            <Link href="/agenda" className="text-white/70 hover:text-white text-sm transition-colors">Agenda</Link>
-            <Link href="/venue" className="text-white/70 hover:text-white text-sm transition-colors">Venue</Link>
-            <Link href="/gallery" className="text-white/70 hover:text-white text-sm transition-colors">Gallery</Link>
-            <Link href="/directory" className="text-white/70 hover:text-white text-sm transition-colors">Directory</Link>
-            <Link href="/contact" className="text-white/70 hover:text-white text-sm transition-colors">Contact</Link>
-            <Link href="/my-registration" className="text-white/70 hover:text-white text-sm transition-colors">My Registration</Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm transition-colors ${
+                  isActive(link.href)
+                    ? "text-pamoja-lime font-medium"
+                    : "text-white/70 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             <Link
               href="/ethiopia/register"
               className="bg-pamoja-lime text-pamoja-green-deep px-5 py-2 rounded-lg text-sm font-semibold hover:bg-pamoja-lime/90 transition-colors"
@@ -58,19 +87,17 @@ export function Navbar() {
         {/* Mobile menu */}
         {open && (
           <div className="lg:hidden pb-4 space-y-1">
-            {[
-              { href: "/speakers", label: "Speakers" },
-              { href: "/agenda", label: "Agenda" },
-              { href: "/venue", label: "Venue" },
-              { href: "/gallery", label: "Gallery" },
-              { href: "/accommodation", label: "Accommodation" },
-              { href: "/directory", label: "Directory" },
-              { href: "/faq", label: "FAQ" },
-              { href: "/contact", label: "Contact" },
-              { href: "/my-registration", label: "My Registration" },
-              { href: "/status", label: "Check Status" },
-            ].map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block text-white/70 hover:text-white text-sm py-2">
+            {mobileLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className={`block text-sm py-2 px-2 rounded transition-colors ${
+                  isActive(link.href)
+                    ? "text-pamoja-lime bg-pamoja-lime/10 font-medium"
+                    : "text-white/70 hover:text-white"
+                }`}
+              >
                 {link.label}
               </Link>
             ))}
@@ -81,6 +108,9 @@ export function Navbar() {
             >
               Register Now
             </Link>
+            <div className="pt-2">
+              <ThemeToggle />
+            </div>
           </div>
         )}
       </div>

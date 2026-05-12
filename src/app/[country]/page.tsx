@@ -3,6 +3,7 @@ import { getCountryConfig } from "@/config/countries";
 import { getPricingForCountry, getConference } from "@/config/conferences";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
+import { PricingTiers } from "@/components/ui/pricing-tiers";
 
 export default async function CountryPage({ params }: { params: Promise<{ country: string }> }) {
   const { country } = await params;
@@ -75,6 +76,12 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
                       Select
                     </ButtonLink>
                   </div>
+                  <PricingTiers
+                    countrySlug={country}
+                    conferenceSlug={p.conferenceId}
+                    currencySymbol={config.currencySymbol}
+                    basePrice={p.priceLocal}
+                  />
                 </CardContent>
               </Card>
             );

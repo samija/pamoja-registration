@@ -41,6 +41,9 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
   const [step, setStep] = useState<Step>(defaultConference ? "details" : "conference");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [promoCode, setPromoCode] = useState("");
+  const [promoResult, setPromoResult] = useState<{ valid: boolean; discountedPrice?: number; savings?: number; discountType?: string; discountValue?: number; error?: string } | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
 
   const [form, setForm] = useState<FormData>({
     conferenceId: defaultConference || "",
@@ -75,6 +78,25 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
   const selectedConf = conferences.find((c) => c.id === form.conferenceId);
 
   const currentStepIdx = STEPS.findIndex((s) => s.key === step);
+
+  async function applyPromo() {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoResult(null);
+    try {
+      const price = selectedPricing?.priceLocal || 0;
+      const res = await fetch(`/api/promo?code=${encodeURIComponent(promoCode)}&price=${price}`);
+      const data = await res.json();
+      setPromoResult(data);
+    } catch {
+      setPromoResult({ valid: false, error: "Failed to validate" });
+    }
+    setPromoLoading(false);
+  }
+
+  const finalPrice = promoResult?.valid && promoResult.discountedPrice != null
+    ? promoResult.discountedPrice
+    : selectedPricing?.priceLocal || 0;
 
   async function handleSubmit() {
     setLoading(true);
@@ -309,12 +331,43 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
                 </div>
               )}
               <hr className="border-pamoja-border" />
-              <div className="flex justify-between">
+              {/* Promo Code */}
+              <div>
+                <p className="text-sm text-pamoja-muted mb-2">Have a promo code?</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoResult(null); }}
+                    placeholder="Enter code"
+                    className="flex-1 px-3 py-2 text-sm rounded-lg border border-pamoja-border bg-white text-pamoja-charcoal uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal focus:border-pamoja-lime focus:ring-1 focus:ring-pamoja-lime outline-none"
+                  />
+                  <Button size="sm" variant="outline" onClick={applyPromo} loading={promoLoading} disabled={!promoCode.trim()}>
+                    Apply
+                  </Button>
+                </div>
+                {promoResult && (
+                  <p className={`text-xs mt-1.5 ${promoResult.valid ? "text-pamoja-green-mid" : "text-red-500"}`}>
+                    {promoResult.valid
+                      ? `${promoResult.discountType === "percentage" ? `${promoResult.discountValue}% off` : `${countryConfig.currencySymbol}${promoResult.discountValue?.toLocaleString()} off`} — you save ${countryConfig.currencySymbol}${promoResult.savings?.toLocaleString()}`
+                      : promoResult.error}
+                  </p>
+                )}
+              </div>
+              <hr className="border-pamoja-border" />
+              <div className="flex justify-between items-end">
                 <span className="text-sm font-semibold">Total</span>
-                <span className="text-lg font-bold text-pamoja-charcoal">
-                  {countryConfig.currencySymbol}
-                  {selectedPricing?.priceLocal.toLocaleString()} {selectedPricing?.currency}
-                </span>
+                <div className="text-right">
+                  {promoResult?.valid && promoResult.discountedPrice != null && (
+                    <span className="text-sm text-pamoja-muted line-through mr-2">
+                      {countryConfig.currencySymbol}{selectedPricing?.priceLocal.toLocaleString()}
+                    </span>
+                  )}
+                  <span className="text-lg font-bold text-pamoja-charcoal">
+                    {countryConfig.currencySymbol}
+                    {finalPrice.toLocaleString()} {selectedPricing?.currency}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -328,7 +381,7 @@ export function RegistrationForm({ countrySlug, countryConfig, pricing, defaultC
               </Button>
               <Button loading={loading} onClick={handleSubmit} size="lg">
                 Pay {countryConfig.currencySymbol}
-                {selectedPricing?.priceLocal.toLocaleString()}
+                {finalPrice.toLocaleString()}
               </Button>
             </div>
           </div>
